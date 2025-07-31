@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Filter, Star, ChevronDown, Grid, List, TrendingUp, Award, Clock, Heart, Eye, Code, Users, Zap, Fire, Sparkles } from 'lucide-react';
+import { Search, Filter, Star, ChevronDown, Grid, List, TrendingUp, Award, Clock, Heart, Eye, Code, Users, Zap, Siren as Fire, Sparkles } from 'lucide-react';
 
 const ProjectListing = () => {
   const [searchTerm, setSearchTerm] = useState('');
