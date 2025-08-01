@@ -1,11 +1,36 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { Plus, Edit, Trash2, Eye, Check, X, Calendar, DollarSign, Users, User, ShoppingBag, Clock, TrendingUp, AlertCircle, BarChart3, Award, Star } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
   const { user } = useAuth();
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
 
   const stats = {
     totalProjects: 45,
@@ -252,101 +277,99 @@ const AdminDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8 bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-xl border border-white/20">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-3">Admin Dashboard</h1>
-              <p className="text-gray-600 text-lg">Welcome back, {user?.name}! Here's your platform overview.</p>
-            </div>
-            <div className="text-right">
-              <div className="text-sm text-gray-500 mb-1">Last login</div>
-              <div className="text-xl font-bold text-gray-900">Today, 9:30 AM</div>
-              <div className="text-sm text-green-600 font-semibold">+{stats.monthlyGrowth}% growth</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/20">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          className="space-y-8"
+        >
+          {/* Header */}
+          <motion.div variants={itemVariants} className="bg-white/90 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border border-white/30">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 font-medium">Total Projects</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalProjects}</p>
-                <p className="text-sm text-green-600 font-semibold">+12% this month</p>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center">
-                <ShoppingBag className="w-7 h-7 text-white" />
-              </div>
-            </div>
-          </div>
-          <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 font-medium">Pending Approval</p>
-                <p className="text-3xl font-bold text-orange-600">{stats.pendingApproval}</p>
-                <p className="text-sm text-orange-600 font-semibold">Needs attention</p>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center">
-                <AlertCircle className="w-7 h-7 text-white" />
-              </div>
-            </div>
-          </div>
-          <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 font-medium">Total Sales</p>
-                <p className="text-3xl font-bold text-green-600">${stats.totalSales}</p>
-                <p className="text-sm text-green-600 font-semibold">+18% this month</p>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center">
-                <DollarSign className="w-7 h-7 text-white" />
-              </div>
-            </div>
-          </div>
-          <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 font-medium">Total Users</p>
-                <p className="text-3xl font-bold text-purple-600">{stats.totalUsers}</p>
-                <p className="text-sm text-purple-600 font-semibold">+24% this month</p>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                <Users className="w-7 h-7 text-white" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20">
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8 px-8">
-              {[
-                { id: 'overview', label: 'Overview' },
-                { id: 'analytics', label: 'Analytics' },
-                { id: 'projects', label: 'Manage Projects' },
-                { id: 'users', label: 'User Management' },
-                { id: 'approval', label: 'Pending Approval' },
-                { id: 'transactions', label: 'Transactions' }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`py-6 px-2 border-b-2 font-semibold text-sm transition-colors ${
-                    activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700'
-                  }`}
+              <div className="flex items-center gap-6">
+                <motion.div 
+                  className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center"
+                  whileHover={{ scale: 1.05, rotate: 5 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
-          </div>
+                  <BarChart3 className="w-8 h-8 text-white" />
+                </motion.div>
+                <div>
+                  <h1 className="text-4xl font-bold text-gray-900 mb-3">Admin Dashboard</h1>
+                  <p className="text-gray-600 text-lg">Welcome back, {user?.name}! Here's your platform overview.</p>
+                  <div className="flex items-center gap-4 mt-2">
+                    <div className="text-sm text-gray-500">Last login: Today, 9:30 AM</div>
+                    <div className="text-sm text-green-600 font-semibold">+{stats.monthlyGrowth}% growth</div>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">${stats.totalSales}</div>
+                <div className="text-sm text-gray-600 font-medium">Total Revenue</div>
+                <div className="text-sm text-green-600 font-semibold mt-1">+18% this month</div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Stats Cards */}
+          <motion.div variants={itemVariants} className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { label: 'Total Projects', value: stats.totalProjects, icon: ShoppingBag, color: 'from-blue-500 to-blue-600', change: '+12% this month', changeColor: 'text-green-600' },
+              { label: 'Pending Approval', value: stats.pendingApproval, icon: AlertCircle, color: 'from-orange-500 to-orange-600', change: 'Needs attention', changeColor: 'text-orange-600' },
+              { label: 'Total Sales', value: `$${stats.totalSales}`, icon: DollarSign, color: 'from-green-500 to-green-600', change: '+18% this month', changeColor: 'text-green-600' },
+              { label: 'Total Users', value: stats.totalUsers, icon: Users, color: 'from-purple-500 to-purple-600', change: '+24% this month', changeColor: 'text-purple-600' }
+            ].map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                variants={itemVariants}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className="bg-white/90 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/30 cursor-pointer"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 font-medium">{stat.label}</p>
+                    <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                    <p className={`text-sm font-semibold ${stat.changeColor}`}>{stat.change}</p>
+                  </div>
+                  <div className={`w-14 h-14 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center`}>
+                    <stat.icon className="w-7 h-7 text-white" />
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Tabs */}
+          <motion.div variants={itemVariants} className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/30">
+            <div className="border-b border-gray-200">
+              <nav className="flex space-x-8 px-8 overflow-x-auto">
+                {[
+                  { id: 'overview', label: 'Overview', icon: BarChart3 },
+                  { id: 'analytics', label: 'Analytics', icon: TrendingUp },
+                  { id: 'projects', label: 'Manage Projects', icon: ShoppingBag },
+                  { id: 'users', label: 'User Management', icon: Users },
+                  { id: 'approval', label: 'Pending Approval', icon: AlertCircle },
+                  { id: 'transactions', label: 'Transactions', icon: DollarSign }
+                ].map((tab) => (
+                  <motion.button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`flex items-center gap-2 py-6 px-4 border-b-2 font-semibold text-sm transition-all duration-200 whitespace-nowrap ${
+                      activeTab === tab.id
+                        ? 'border-blue-500 text-blue-600 bg-blue-50/50'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50/50'
+                    }`}
+                  >
+                    <tab.icon className="w-4 h-4" />
+                    {tab.label}
+                  </motion.button>
+                ))}
+              </nav>
+            </div>
 
           <div className="p-8">
             {activeTab === 'overview' && (
@@ -515,16 +538,46 @@ const AdminDashboard = () => {
             {activeTab === 'projects' && (
               <div>
                 <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900">Manage Projects</h2>
-                  <button 
-                    onClick={() => setIsAddModalOpen(true)}
-                    className="flex items-center gap-3 bg-gradient-to-r from-blue-600 to-teal-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-teal-700 transition-all duration-200 shadow-lg"
-                  >
-                    <Plus className="w-5 h-5" />
-                    Add Project
-                  </button>
+                  <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                    <ShoppingBag className="w-6 h-6 text-blue-600" />
+                    Manage Projects
+                  </h2>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="text"
+                        placeholder="Search projects..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                      />
+                      <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                      >
+                        <option value="all">All Status</option>
+                        <option value="approved">Approved</option>
+                        <option value="pending">Pending</option>
+                        <option value="rejected">Rejected</option>
+                      </select>
+                    </div>
+                    <motion.button 
+                      onClick={() => setIsAddModalOpen(true)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex items-center gap-3 bg-gradient-to-r from-blue-600 to-teal-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-teal-700 transition-all duration-200 shadow-lg"
+                    >
+                      <Plus className="w-5 h-5" />
+                      Add Project
+                    </motion.button>
+                  </div>
                 </div>
-                <div className="bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100"
+                >
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
@@ -540,7 +593,13 @@ const AdminDashboard = () => {
                       </thead>
                       <tbody className="divide-y divide-gray-200">
                         {projects.filter(p => p.status === 'approved').map((project) => (
-                          <tr key={project.id} className="hover:bg-gray-50 transition-colors">
+                          <motion.tr 
+                            key={project.id} 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            whileHover={{ backgroundColor: '#f9fafb' }}
+                            className="transition-colors"
+                          >
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-3">
                                 <img 
@@ -572,33 +631,46 @@ const AdminDashboard = () => {
                             </td>
                             <td className="px-6 py-4">
                               <div className="flex space-x-2">
-                                <button className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors">
+                                <motion.button 
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
+                                  className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                                >
                                   <Eye className="w-4 h-4" />
-                                </button>
-                                <button className="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors">
+                                </motion.button>
+                                <motion.button 
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
+                                  className="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors"
+                                >
                                   <Edit className="w-4 h-4" />
-                                </button>
-                                <button 
+                                </motion.button>
+                                <motion.button 
                                   onClick={() => handleDelete(project.id)}
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
                                   className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
                                 >
                                   <Trash2 className="w-4 h-4" />
-                                </button>
+                                </motion.button>
                               </div>
                             </td>
-                          </tr>
+                          </motion.tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
-                </div>
+                </motion.div>
               </div>
             )}
 
             {activeTab === 'users' && (
               <div>
                 <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-2xl font-bold text-gray-900">User Management</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                    <Users className="w-6 h-6 text-blue-600" />
+                    User Management
+                  </h2>
                   <div className="flex gap-4">
                     <select className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
                       <option>All Users</option>
@@ -628,7 +700,13 @@ const AdminDashboard = () => {
                       </thead>
                       <tbody className="divide-y divide-gray-200">
                         {users.map((user) => (
-                          <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                          <motion.tr 
+                            key={user.id} 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            whileHover={{ backgroundColor: '#f9fafb' }}
+                            className="transition-colors"
+                          >
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-4">
                                 <img 
@@ -665,18 +743,30 @@ const AdminDashboard = () => {
                             </td>
                             <td className="px-6 py-4">
                               <div className="flex space-x-2">
-                                <button className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors">
+                                <motion.button 
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
+                                  className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                                >
                                   <Eye className="w-4 h-4" />
-                                </button>
-                                <button className="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors">
+                                </motion.button>
+                                <motion.button 
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
+                                  className="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors"
+                                >
                                   <Edit className="w-4 h-4" />
-                                </button>
-                                <button className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors">
+                                </motion.button>
+                                <motion.button 
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
+                                  className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+                                >
                                   <Trash2 className="w-4 h-4" />
-                                </button>
+                                </motion.button>
                               </div>
                             </td>
-                          </tr>
+                          </motion.tr>
                         ))}
                       </tbody>
                     </table>
@@ -687,7 +777,13 @@ const AdminDashboard = () => {
 
             {activeTab === 'approval' && (
               <div>
-                <h2 className="text-2xl font-bold mb-8 text-gray-900">Pending Approval</h2>
+                <h2 className="text-2xl font-bold mb-8 text-gray-900 flex items-center gap-3">
+                  <AlertCircle className="w-6 h-6 text-orange-600" />
+                  Pending Approval
+                  <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-bold">
+                    {projects.filter(p => p.status === 'pending').length}
+                  </span>
+                </h2>
                 <div className="bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100">
                   <div className="overflow-x-auto">
                     <table className="w-full">
@@ -703,7 +799,13 @@ const AdminDashboard = () => {
                       </thead>
                       <tbody className="divide-y divide-gray-200">
                         {projects.filter(p => p.status === 'pending').map((project) => (
-                          <tr key={project.id} className="hover:bg-gray-50 transition-colors">
+                          <motion.tr 
+                            key={project.id} 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            whileHover={{ backgroundColor: '#f9fafb' }}
+                            className="transition-colors"
+                          >
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-3">
                                 <img 
@@ -730,24 +832,32 @@ const AdminDashboard = () => {
                             </td>
                             <td className="px-6 py-4">
                               <div className="flex space-x-2">
-                                <button className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors">
+                                <motion.button 
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
+                                  className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                                >
                                   <Eye className="w-4 h-4" />
-                                </button>
-                                <button 
+                                </motion.button>
+                                <motion.button 
                                   onClick={() => handleApprove(project.id)}
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
                                   className="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors"
                                 >
                                   <Check className="w-4 h-4" />
-                                </button>
-                                <button 
+                                </motion.button>
+                                <motion.button 
                                   onClick={() => handleReject(project.id)}
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.9 }}
                                   className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
                                 >
                                   <X className="w-4 h-4" />
-                                </button>
+                                </motion.button>
                               </div>
                             </td>
-                          </tr>
+                          </motion.tr>
                         ))}
                       </tbody>
                     </table>
@@ -758,7 +868,10 @@ const AdminDashboard = () => {
 
             {activeTab === 'transactions' && (
               <div>
-                <h2 className="text-2xl font-bold mb-8 text-gray-900">Transaction History</h2>
+                <h2 className="text-2xl font-bold mb-8 text-gray-900 flex items-center gap-3">
+                  <DollarSign className="w-6 h-6 text-green-600" />
+                  Transaction History
+                </h2>
                 <div className="bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100">
                   <div className="overflow-x-auto">
                     <table className="w-full">
@@ -773,7 +886,13 @@ const AdminDashboard = () => {
                       </thead>
                       <tbody className="divide-y divide-gray-200">
                         {transactions.map((transaction) => (
-                          <tr key={transaction.id} className="hover:bg-gray-50 transition-colors">
+                          <motion.tr 
+                            key={transaction.id} 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            whileHover={{ backgroundColor: '#f9fafb' }}
+                            className="transition-colors"
+                          >
                             <td className="px-6 py-4">
                               <div className="font-semibold text-gray-900">{transaction.project}</div>
                             </td>
@@ -791,7 +910,7 @@ const AdminDashboard = () => {
                                 {transaction.status}
                               </span>
                             </td>
-                          </tr>
+                          </motion.tr>
                         ))}
                       </tbody>
                     </table>
@@ -800,7 +919,8 @@ const AdminDashboard = () => {
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
+        </motion.div>
       </div>
 
       {isAddModalOpen && <AddProjectModal />}

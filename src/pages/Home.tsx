@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Search, Code, Database, Globe, Smartphone, Star, ArrowRight, Users, Award, TrendingUp, Clock, BookOpen, Brain, DollarSign } from 'lucide-react';
 import LoginForm from '../components/LoginForm';
 
@@ -277,51 +278,82 @@ const Home = () => {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Title */}
-          <div className="text-center mb-20">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-20"
+          >
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
               Start Exploring & Building
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Discover trending technologies and real-world projects to level up your skills
             </p>
-          </div>
+          </motion.div>
 
           {/* Technologies Grid */}
           <div className="mb-20">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {categories.map((category) => (
-                <Link key={category.name}to={`/projects?category=${category.name.toLowerCase()}`}className="group bg-white rounded-2xl p-6 text-center hover:shadow-2xl transition-all duration-300 hover:scale-105 border border-gray-100">
-                  <div className={`w-16 h-16 ${category.color} rounded-xl flex items-center justify-center mx-auto mb-4 transition-transform group-hover:scale-110`}>
+                <motion.div
+                  key={category.name}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: Math.random() * 0.3 }}
+                  viewport={{ once: true }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                >
+                  <Link 
+                    to={`/projects?category=${category.name.toLowerCase()}`}
+                    className="group bg-white rounded-2xl p-6 text-center hover:shadow-2xl transition-all duration-300 border border-gray-100 block"
+                  >
+                    <div className={`w-16 h-16 ${category.color} rounded-xl flex items-center justify-center mx-auto mb-4 transition-transform group-hover:scale-110`}>
                     <category.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">{category.name}</h3>
-                  <p className="text-gray-600 text-sm">{category.count} projects</p>
-                  <div className="mt-2 inline-flex items-center px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                    <TrendingUp className="w-3 h-3 mr-1" />
-                    {category.growth}
-                  </div>
-                </Link>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-300">{category.name}</h3>
+                    <p className="text-gray-600 text-sm">{category.count} projects</p>
+                    <div className="mt-2 inline-flex items-center px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium group-hover:bg-green-200 transition-colors duration-300">
+                      <TrendingUp className="w-3 h-3 mr-1" />
+                      {category.growth}
+                    </div>
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </div>
 
           {/* Featured Projects */}
-          <div className="text-center mb-14">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-14"
+          >
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Featured Projects
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Hand-picked projects to inspire your next build
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
   {featuredProjects.map((project, idx) => (
-    <Link
+    <motion.div
       key={project.id}
-      to={`/project/${project.id}`}
-      className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:scale-105 border border-gray-100 relative"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: idx * 0.1 }}
+      viewport={{ once: true }}
+      whileHover={{ scale: 1.05, y: -10 }}
     >
+      <Link
+        to={`/project/${project.id}`}
+        className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-100 relative block"
+      >
       {/* Discount Badge */}
       {parseInt(project.originalPrice.replace(/\₹/g, '')) > parseInt(project.price.replace(/\₹/g, '')) && (
         <span className="absolute top-4 left-4 z-20 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-bounce">
@@ -432,7 +464,8 @@ const Home = () => {
           </div>
         </div>
       </div>
-    </Link>
+      </Link>
+    </motion.div>
   ))}
 </div>
 
@@ -442,20 +475,31 @@ const Home = () => {
       {/* Testimonials */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
             <h2 className="text-3xl md:text-4xl font-semibold text-gray-900">
               What Students Say
             </h2>
             <p className="text-lg text-gray-600 mt-2 max-w-2xl mx-auto">
               Trusted by thousands of learners to showcase real, impactful project experience.
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.02, y: -5 }}
+                className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300"
               >
                 {/* Stars */}
                 <div className="flex mb-4">
@@ -498,15 +542,182 @@ const Home = () => {
                     </span>
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Enhanced CTA Section */}
+      <motion.section 
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="relative py-24 overflow-hidden"
+      >
+        {/* Animated Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-teal-900">
+          <div className="absolute inset-0 bg-black/20" />
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }} />
+          </div>
+          
+          {/* Floating Elements */}
+          <motion.div
+            animate={{ 
+              y: [0, -20, 0],
+              rotate: [0, 5, 0]
+            }}
+            transition={{ 
+              duration: 6,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="absolute top-20 left-20 w-20 h-20 bg-blue-500/20 rounded-full blur-xl"
+          />
+          <motion.div
+            animate={{ 
+              y: [0, 30, 0],
+              rotate: [0, -5, 0]
+            }}
+            transition={{ 
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 2
+            }}
+            className="absolute bottom-20 right-20 w-32 h-32 bg-purple-500/20 rounded-full blur-xl"
+          />
+          <motion.div
+            animate={{ 
+              y: [0, -15, 0],
+              x: [0, 10, 0]
+            }}
+            transition={{ 
+              duration: 7,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1
+            }}
+            className="absolute top-1/2 left-1/3 w-16 h-16 bg-teal-500/20 rounded-full blur-xl"
+          />
+        </div>
+
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <div className="inline-flex items-center px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full text-sm font-bold mb-8 border border-white/20">
+              <Award className="w-4 h-4 mr-2 text-yellow-400" />
+              Join 10,000+ Successful Developers
+            </div>
+            
+            <h2 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
+              Ready to Share Your
+              <span className="block bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent">
+                Amazing Project?
+              </span>
+            </h2>
+            
+            <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto leading-relaxed mb-12">
+              Turn your coding skills into income. Upload your project today and start earning from your expertise while helping fellow developers learn.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Link 
+                  to="/upload" 
+                  className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-3xl transition-all duration-300 overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 to-orange-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="relative flex items-center gap-3">
+                    <motion.div
+                      animate={{ rotate: [0, 360] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    >
+                      🚀
+                    </motion.div>
+                    Share Your Project Now
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                  </div>
+                </Link>
+              </motion.div>
+              
+              <Link 
+                to="/projects" 
+                className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 backdrop-blur-sm text-white rounded-2xl font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105"
+              >
+                <BookOpen className="w-5 h-5" />
+                Browse Projects
+              </Link>
+            </div>
+            
+            {/* Benefits Grid */}
+            <div className="grid md:grid-cols-3 gap-8 mt-16">
+              {[
+                { icon: DollarSign, title: "Earn Money", desc: "Get paid for your hard work" },
+                { icon: Users, title: "Help Others", desc: "Share knowledge with the community" },
+                { icon: Award, title: "Build Reputation", desc: "Showcase your expertise" }
+              ].map((benefit, index) => (
+                <motion.div
+                  key={benefit.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 + index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="text-center"
+                >
+                  <div className="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
+                    <benefit.icon className="w-8 h-8 text-yellow-300" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">{benefit.title}</h3>
+                  <p className="text-blue-200">{benefit.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+            
+            {/* Trust Indicators */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              viewport={{ once: true }}
+              className="flex justify-center items-center gap-8 mt-16 text-blue-200"
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                <span className="text-sm">Secure Payments</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                <span className="text-sm">24/7 Support</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                <span className="text-sm">Money Back Guarantee</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </motion.section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-900 via-blue-800 to-teal-700 text-white relative overflow-hidden">
+      <motion.section 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        viewport={{ once: true }}
+        className="py-20 bg-gradient-to-br from-blue-900 via-blue-800 to-teal-700 text-white relative overflow-hidden"
+      >
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
@@ -514,23 +725,61 @@ const Home = () => {
         </div>
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Ready to Start Your Journey?
-          </h2>
-          <p className="text-xl mb-8 text-blue-100 leading-relaxed">
-            Join thousands of students who have already transformed their academic experience with StudyStack
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/signup" className="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-900 rounded-xl font-bold text-lg hover:bg-gray-50 transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:scale-105">
-              Get Started Today
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Link>
-            <Link to="/projects" className="inline-flex items-center justify-center px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl font-bold text-lg hover:bg-white hover:text-blue-900 transition-all duration-200">
-              Browse Projects
-            </Link>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+              Everything students need in one place
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
+            </p>
+              <motion.div 
+                key={index} 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className="text-center group cursor-pointer"
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Ready to Start Your Journey?
+            </h2>
+            <p className="text-xl mb-8 text-blue-100 leading-relaxed">
+              Join thousands of students who have already transformed their academic experience with ProjXchange
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link to="/signup" className="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-900 rounded-xl font-bold text-lg hover:bg-gray-50 transition-all duration-200 shadow-xl hover:shadow-2xl">
+                  Get Started Today
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link to="/projects" className="inline-flex items-center justify-center px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl font-bold text-lg hover:bg-white hover:text-blue-900 transition-all duration-200">
+                  Browse Projects
+                </Link>
+              </motion.div>
+            </div>
+          </motion.div>
 
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
+          >
             <div>
               <div className="text-2xl font-bold mb-2">24/7</div>
               <div className="text-blue-200 text-sm">Support Available</div>
@@ -540,16 +789,31 @@ const Home = () => {
               <div className="text-blue-200 text-sm">Money Back Guarantee</div>
             </div>
             <div>
-              <div className="text-2xl font-bold mb-2">500+</div>
-              <div className="text-blue-200 text-sm">Quality Projects</div>
-            </div>
-            <div>
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="mt-20 text-center"
+          >
+            <motion.button
+              onClick={() => setShowLogin(true)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-teal-500 hover:from-blue-700 hover:to-teal-600 text-white px-10 py-4 rounded-2xl text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300"
               <div className="text-2xl font-bold mb-2">10k+</div>
-              <div className="text-blue-200 text-sm">Happy Students</div>
-            </div>
-          </div>
+              <motion.div
+                animate={{ rotate: [0, 360] }}
+          </motion.div>
+              >
+                🚀
+              </motion.div>
+              Join ProjXchange Now
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };
