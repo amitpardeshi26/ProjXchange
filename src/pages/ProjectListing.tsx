@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Star, ChevronDown, Grid, List, TrendingUp, Award, Clock, Heart, Eye, Code, Users, Zap, Siren as Fire, Sparkles } from 'lucide-react';
+import ProjectCard from '../components/ProjectCard';
+import ProjectCardGrid from '../components/ProjectCardGrid';
 
 const ProjectListing = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -223,156 +225,6 @@ const ProjectListing = () => {
     );
   };
 
-  const ProjectCard = ({ project, index }: { project: typeof projects[0], index: number }) => (
-    <div 
-      className="group bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 hover:scale-[1.02] hover:-translate-y-3 border border-gray-100 relative animate-slideInUp"
-      style={{ animationDelay: `${index * 100}ms` }}
-    >
-      {/* Badges */}
-      <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
-        {project.originalPrice > project.price && (
-          <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
-            {Math.round((1 - project.price / project.originalPrice) * 100)}% OFF
-          </span>
-        )}
-        {project.featured && (
-          <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1">
-            <Award className="w-3 h-3" />
-            Featured
-          </span>
-        )}
-        {project.trending && (
-          <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1 animate-bounce">
-            <Fire className="w-3 h-3" />
-            Trending
-          </span>
-        )}
-      </div>
-
-      {/* Favorite Button */}
-      <button 
-        className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-sm rounded-full p-2 flex items-center justify-center hover:bg-pink-100 hover:scale-110 transition-all duration-300 shadow-lg group/fav"
-        title="Add to favorites"
-        type="button"
-        onClick={e => { e.preventDefault(); }}
-      >
-        <Heart className="w-5 h-5 text-pink-500 group-hover/fav:scale-125 group-hover/fav:fill-current transition-all duration-300" />
-      </button>
-
-      <div className="relative overflow-hidden">
-        <img 
-          src={project.thumbnail} 
-          alt={project.title}
-          className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        
-        {/* Quick Stats Overlay */}
-        <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
-          <div className="flex items-center gap-3 text-white text-sm">
-            <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-1">
-              <Eye className="w-3 h-3" />
-              <span>{project.views}</span>
-            </div>
-            <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-full px-2 py-1">
-              <Heart className="w-3 h-3" />
-              <span>{project.likes}</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 text-white text-sm bg-black/50 backdrop-blur-sm rounded-full px-2 py-1">
-            <Code className="w-3 h-3" />
-            <span>{project.githubStars}</span>
-          </div>
-        </div>
-      </div>
-      
-      <div className="p-6 bg-gradient-to-b from-white to-gray-50/50">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className="px-3 py-1 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 rounded-full text-sm font-semibold shadow-sm">
-              {project.category}
-            </span>
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-              project.difficulty === 'Beginner' ? 'bg-green-100 text-green-700' :
-              project.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-700' :
-              'bg-red-100 text-red-700'
-            }`}>
-              {project.difficulty}
-            </span>
-          </div>
-          <div className="flex items-center">
-            <Star className="w-4 h-4 text-yellow-400 fill-current" />
-            <span className="ml-1 text-sm font-semibold text-gray-700">{project.rating}</span>
-            <span className="ml-1 text-sm text-gray-500">({project.reviews})</span>
-          </div>
-        </div>
-        
-        <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300 line-clamp-1">
-          {project.title}
-        </h3>
-        <p className="text-gray-600 mb-4 font-medium line-clamp-2 leading-relaxed text-sm">{project.description}</p>
-        
-        <div className="flex items-center mb-4">
-          <img 
-            src={project.seller.avatar} 
-            alt={project.seller.name}
-            className="w-8 h-8 rounded-full object-cover mr-3 ring-2 ring-blue-100 group-hover:ring-blue-200 transition-all duration-300"
-          />
-          <div>
-            <div className="font-semibold text-gray-900 text-sm">{project.seller.name}</div>
-            <div className="flex items-center">
-              <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                project.seller.level === 'Top Rated' 
-                  ? 'bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-700'
-                  : 'bg-blue-100 text-blue-700'
-              }`}>
-                {project.seller.level}
-              </span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.techStack.slice(0, 3).map((tech, techIndex) => (
-            <span 
-              key={techIndex} 
-              className="px-2 py-1 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-lg text-xs font-medium shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer"
-              onClick={() => toggleTag(tech)}
-            >
-              {tech}
-            </span>
-          ))}
-          {project.techStack.length > 3 && (
-            <span className="px-2 py-1 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-lg text-xs font-medium shadow-sm">
-              +{project.techStack.length - 3}
-            </span>
-          )}
-        </div>
-        
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-gray-900">${project.price}</span>
-            <span className="text-lg text-gray-500 line-through">${project.originalPrice}</span>
-          </div>
-          <div className="text-right text-sm">
-            <div className="text-gray-600 flex items-center justify-end">
-              <Clock className="w-3 h-3 mr-1" />
-              {project.deliveryTime}
-            </div>
-            <div className="text-green-600 font-medium">{project.sales} sales</div>
-          </div>
-        </div>
-        
-        <Link
-          to={`/project/${project.id}`}
-          className="block w-full text-center px-6 py-3 bg-gradient-to-r from-blue-600 to-teal-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-teal-700 transition-all duration-300 hover:scale-105 transform"
-        >
-          View Details
-        </Link>
-      </div>
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       {/* Hero Section */}
@@ -555,11 +407,42 @@ const ProjectListing = () => {
 
         {/* Projects Grid */}
         {filteredProjects.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} />
-            ))}
-          </div>
+          <ProjectCardGrid
+            projects={filteredProjects.map(project => ({
+              id: project.id,
+              title: project.title,
+              description: project.description,
+              coverImage: project.thumbnail,
+              techStack: project.techStack,
+              author: {
+                name: project.seller.name,
+                avatar: project.seller.avatar,
+                level: project.seller.level,
+              },
+              stats: {
+                stars: project.githubStars,
+                likes: project.likes,
+                views: project.views,
+                sales: project.sales,
+              },
+              price: project.price,
+              originalPrice: project.originalPrice,
+              rating: project.rating,
+              reviews: project.reviews,
+              githubUrl: project.githubUrl,
+              liveDemo: project.liveDemo,
+              featured: project.featured,
+              trending: project.trending,
+              difficulty: project.difficulty,
+              deliveryTime: project.deliveryTime,
+              dateAdded: project.dateAdded,
+            }))}
+            variant="default"
+            showPrice={true}
+            showStats={true}
+            showActions={true}
+            gridCols="auto"
+          />
         ) : (
           <div className="text-center py-16 animate-slideInUp">
             <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
