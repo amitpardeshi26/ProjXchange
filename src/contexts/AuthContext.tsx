@@ -1,23 +1,17 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'student' | 'admin';
-  avatar?: string;
-  joinedDate: string;
-}
+import { User, UserProfile } from '../types/user';
+import { useUserProfile } from '../hooks/useUserProfile';
 
 interface AuthContextType {
   user: User | null;
+  userProfile: UserProfile | null;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
-  signup: (name: string, email: string, password: string, role: 'student' | 'admin') => Promise<boolean>;
+  signup: (name: string, email: string, password: string, userType: string) => Promise<boolean>;
   isAuthenticated: boolean;
   isAdmin: boolean;
   isStudent: boolean;
+  refreshProfile: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,27 +21,33 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const mockUsers: User[] = [
   {
     id: '1',
-    name: 'John Doe',
+    full_name: 'John Doe',
     email: 'john@studystack.com',
-    role: 'student',
-    avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150',
-    joinedDate: '2023-09-15'
+    user_type: 'student',
+    verification_status: 'verified',
+    created_at: '2023-09-15T00:00:00Z',
+    updated_at: '2023-09-15T00:00:00Z',
+    email_verified: true
   },
   {
     id: '2',
-    name: 'Admin User',
+    full_name: 'Admin User',
     email: 'admin@studystack.com',
-    role: 'admin',
-    avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150',
-    joinedDate: '2023-01-01'
+    user_type: 'admin',
+    verification_status: 'verified',
+    created_at: '2023-01-01T00:00:00Z',
+    updated_at: '2023-01-01T00:00:00Z',
+    email_verified: true
   },
   {
     id: '3',
-    name: 'Sarah Wilson',
+    full_name: 'Sarah Wilson',
     email: 'sarah@studystack.com',
-    role: 'student',
-    avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150',
-    joinedDate: '2023-10-20'
+    user_type: 'student',
+    verification_status: 'verified',
+    created_at: '2023-10-20T00:00:00Z',
+    updated_at: '2023-10-20T00:00:00Z',
+    email_verified: true
   }
 ];
 
@@ -60,6 +60,8 @@ const mockPasswords: Record<string, string> = {
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const { profile: userProfile, fetchProfile } = useUserProfile(user?.id);
+
   useEffect(() => {
     // Check for stored user session
     const storedUser = localStorage.getItem('studystack_user');
@@ -83,7 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
-  const signup = async (name: string, email: string, password: string, role: 'student' | 'admin'): Promise<boolean> => {
+  const signup = async (name: string, email: string, password: string, userType: string): Promise<boolean> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -94,11 +96,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const newUser: User = {
       id: Date.now().toString(),
-      name,
+      full_name: name,
       email,
-      role,
-      avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150',
-      joinedDate: new Date().toISOString()
+      user_type: userType,
+      verification_status: 'pending',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      email_verified: false
     };
 
     mockUsers.push(newUser);
@@ -111,17 +115,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setUser(null);
     localStorage.removeItem('studystack_user');
+  };
 
+  const refreshProfile = () => {
+    if (user?.id) {
+      fetchProfile(user.id);
+    }
   };
 
   const value: AuthContextType = {
     user,
+    userProfile,
     login,
     logout,
     signup,
     isAuthenticated: !!user,
-    isAdmin: user?.role === 'admin',
-    isStudent: user?.role === 'student'
+    isAdmin: user?.user_type === 'admin',
+    isStudent: user?.user_type === 'student',
+    refreshProfile
   };
 
   return (

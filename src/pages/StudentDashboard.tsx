@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Download, Star, Calendar, Settings, User, ShoppingBag, Heart, Eye, Award, TrendingUp, Clock, BarChart3, Zap, BookOpen, Trophy, Target, Activity, ChevronRight, Plus, Filter, Search } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useUserProfile } from '../hooks/useUserProfile';
+import ProfileSetup from '../components/ProfileSetup';
 
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
-  const { user } = useAuth();
+  const { user, userProfile, refreshProfile } = useAuth();
+  const [showProfileSetup, setShowProfileSetup] = useState(false);
 
   const purchasedProjects = [
     {
@@ -57,12 +60,12 @@ const StudentDashboard = () => {
   ];
 
   const userProfile = {
-    name: user?.name || 'Student User',
+    name: user?.full_name || 'Student User',
     email: user?.email || 'student@studystack.com',
-    joinedDate: user?.joinedDate || '2023-09-15',
+    joinedDate: user?.created_at || '2023-09-15',
     totalSpent: 109,
     projectsOwned: 3,
-    avatar: user?.avatar || 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150',
+    avatar: userProfile?.avatar || 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150',
     level: 'Premium Member',
     completedProjects: 3,
     avgRating: 4.8,
@@ -227,6 +230,33 @@ const StudentDashboard = () => {
       </div>
     </div>
   );
+
+  // Show profile setup if user doesn't have a complete profile
+  if (!userProfile && user) {
+    return (
+      <ProfileSetup 
+        userId={user.id} 
+        onComplete={() => {
+          refreshProfile();
+          setShowProfileSetup(false);
+        }} 
+      />
+    );
+  }
+
+  if (showProfileSetup && userProfile) {
+    return (
+      <ProfileSetup 
+        userId={user?.id || ''} 
+        existingProfile={userProfile}
+        isEditing={true}
+        onComplete={() => {
+          refreshProfile();
+          setShowProfileSetup(false);
+        }} 
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
@@ -711,7 +741,7 @@ const StudentDashboard = () => {
 
                     <div className="flex gap-4 pt-6">
                       <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-teal-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105">
-                        Save Changes
+                        Edit Profile
                       </button>
                       <button className="px-8 py-3 border border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 hover:scale-105 transition-all duration-200">
                         Cancel
