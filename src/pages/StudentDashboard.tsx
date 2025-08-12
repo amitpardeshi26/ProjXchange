@@ -59,7 +59,7 @@ const StudentDashboard = () => {
     }
   ];
 
-  const userProfile = {
+  const displayProfile = {
     name: user?.full_name || 'Student User',
     email: user?.email || 'student@studystack.com',
     joinedDate: user?.created_at || '2023-09-15',
@@ -273,40 +273,40 @@ const StudentDashboard = () => {
             <div className="flex items-center gap-6 animate-slideInLeft">
               <div className="relative">
                 <img 
-                  src={userProfile.avatar} 
-                  alt={userProfile.name}
+                  src={displayProfile.avatar} 
+                  alt={displayProfile.name}
                   className="w-20 h-20 rounded-full object-cover ring-4 ring-white/30"
                 />
                 <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                  {userProfile.level}
+                  {displayProfile.level}
                 </div>
               </div>
               <div>
-                <h1 className="text-4xl font-bold mb-2">Welcome back, {userProfile.name}!</h1>
-                <p className="text-blue-100 text-lg">{userProfile.email}</p>
+                <h1 className="text-4xl font-bold mb-2">Welcome back, {displayProfile.name}!</h1>
+                <p className="text-blue-100 text-lg">{displayProfile.email}</p>
                 <div className="flex items-center gap-4 mt-2">
                   <div className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    <span className="text-sm">Member since {new Date(userProfile.joinedDate).toLocaleDateString()}</span>
+                    <span className="text-sm">Member since {new Date(displayProfile.joinedDate).toLocaleDateString()}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Zap className="w-4 h-4 text-yellow-300" />
-                    <span className="text-sm font-semibold">{userProfile.streak} day streak</span>
+                    <span className="text-sm font-semibold">{displayProfile.streak} day streak</span>
                   </div>
                 </div>
               </div>
             </div>
             <div className="text-right animate-slideInRight">
-              <div className="text-3xl font-bold">{userProfile.points}</div>
+              <div className="text-3xl font-bold">{displayProfile.points}</div>
               <div className="text-blue-200 text-sm">Points</div>
               <div className="w-32 bg-white/20 rounded-full h-2 mt-2">
                 <div 
                   className="bg-gradient-to-r from-yellow-400 to-orange-500 h-2 rounded-full"
-                  style={{ width: `${(userProfile.points / userProfile.nextLevelPoints) * 100}%` }}
+                  style={{ width: `${(displayProfile.points / displayProfile.nextLevelPoints) * 100}%` }}
                 />
               </div>
               <div className="text-xs text-blue-200 mt-1">
-                {userProfile.nextLevelPoints - userProfile.points} to next level
+                {displayProfile.nextLevelPoints - displayProfile.points} to next level
               </div>
             </div>
           </div>
@@ -318,7 +318,7 @@ const StudentDashboard = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 -mt-16 relative z-10">
           <StatCard
             title="Projects Owned"
-            value={userProfile.projectsOwned}
+            value={displayProfile.projectsOwned}
             subtitle="+2 this month"
             icon={ShoppingBag}
             color="text-blue-600"
@@ -326,7 +326,7 @@ const StudentDashboard = () => {
           />
           <StatCard
             title="Total Spent"
-            value={`$${userProfile.totalSpent}`}
+            value={`$${displayProfile.totalSpent}`}
             subtitle="Saved $67"
             icon={Award}
             color="text-green-600"
@@ -341,7 +341,7 @@ const StudentDashboard = () => {
           />
           <StatCard
             title="Avg Rating"
-            value={userProfile.avgRating}
+            value={displayProfile.avgRating}
             subtitle="Excellent"
             icon={Star}
             color="text-yellow-600"
@@ -668,12 +668,12 @@ const StudentDashboard = () => {
                     <div className="flex items-center gap-8">
                       <div className="relative">
                         <img 
-                          src={userProfile.avatar} 
-                          alt={userProfile.name}
+                          src={displayProfile.avatar} 
+                          alt={displayProfile.name}
                           className="w-24 h-24 rounded-full object-cover ring-4 ring-blue-100"
                         />
                         <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-blue-600 to-teal-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                          {userProfile.level}
+                          {displayProfile.level}
                         </div>
                       </div>
                       <div>
@@ -689,7 +689,7 @@ const StudentDashboard = () => {
                         <label className="block text-sm font-semibold text-gray-700 mb-3">Full Name</label>
                         <input
                           type="text"
-                          defaultValue={userProfile.name}
+                          defaultValue={displayProfile.name}
                           className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
                         />
                       </div>
@@ -697,7 +697,7 @@ const StudentDashboard = () => {
                         <label className="block text-sm font-semibold text-gray-700 mb-3">Email</label>
                         <input
                           type="email"
-                          defaultValue={userProfile.email}
+                          defaultValue={displayProfile.email}
                           className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
                         />
                       </div>
