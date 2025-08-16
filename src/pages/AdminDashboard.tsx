@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Edit, Trash2, Eye, Check, X, Calendar, DollarSign, Users, User, ShoppingBag, Clock, TrendingUp, AlertCircle, BarChart3, Award, Star, Activity, Zap, Target, Filter, Search, ChevronDown, Bell, Settings } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const navigate = useNavigate();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -409,6 +411,7 @@ const AdminDashboard = () => {
                     activeTab === tab.id
                       ? 'border-blue-500 text-blue-600 scale-105'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:scale-105'
+                  onClick={() => navigate('/upload')}
                   }`}
                 >
                   <tab.icon className="w-5 h-5" />
