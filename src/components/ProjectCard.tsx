@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Star, Tag, Flame } from "lucide-react";
+import { Star, Tag, Flame, Heart, ShoppingCart } from "lucide-react";
 import { Project } from "../types/Project";
+import { useWishlist } from "../contexts/WishlistContext";
+import { useCart } from "../contexts/CartContext";
+import { useAuth } from "../contexts/AuthContext";
 
 interface ProjectCardProps {
   project: Project;
@@ -9,6 +12,10 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard = ({ project, index }: ProjectCardProps) => {
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addToCart, isInCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  
   const discount = project.pricing.original_price > project.pricing.sale_price;
   const discountPercent = discount 
     ? Math.round((1 - project.pricing.sale_price / project.pricing.original_price) * 100)
@@ -25,6 +32,34 @@ export const ProjectCard = ({ project, index }: ProjectCardProps) => {
       'Mobile': 'https://images.pexels.com/photos/1181676/pexels-photo-1181676.jpeg?auto=compress&cs=tinysrgb&w=400'
     };
     return images[category as keyof typeof images] || images['React'];
+  };
+
+  const handleWishlistClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!isAuthenticated) {
+      return;
+    }
+
+    if (isInWishlist(project.id)) {
+      await removeFromWishlist(project.id);
+    } else {
+      await addToWishlist(project.id);
+    }
+  };
+
+  const handleCartClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!isAuthenticated) {
+      return;
+    }
+
+    if (!isInCart(project.id)) {
+      await addToCart(project.id);
+    }
   };
 
   return (
@@ -68,35 +103,46 @@ export const ProjectCard = ({ project, index }: ProjectCardProps) => {
           )}
 
           {/* Favorite */}
-          <motion.button
-            initial={{ scale: 0, opacity: 0 }}
-            whileInView={{ scale: 1, opacity: 1 }}
-            transition={{ delay: index * 0.15 + 0.4, duration: 0.3 }}
-            viewport={{ once: true }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-pink-100 transition z-20 shadow"
-            title="Add to favorites"
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              // Handle favorite
-            }}
-          >
-            <svg
-              className="w-5 h-5 text-pink-500"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
+          <div className="absolute bottom-4 right-4 flex gap-2 z-20">
+            <motion.button
+              initial={{ scale: 0, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              transition={{ delay: index * 0.15 + 0.4, duration: 0.3 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className={`bg-white/90 backdrop-blur-sm rounded-full p-2 transition shadow ${
+                isInWishlist(project.id) 
+                  ? 'bg-pink-100 text-pink-600' 
+                  : 'hover:bg-pink-100 text-pink-500'
+              }`}
+              title={isInWishlist(project.id) ? "Remove from wishlist" : "Add to wishlist"}
+              type="button"
+              onClick={handleWishlistClick}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z"
-              />
-            </svg>
-          </motion.button>
+              <Heart className={`w-5 h-5 ${isInWishlist(project.id) ? 'fill-current' : ''}`} />
+            </motion.button>
+
+            <motion.button
+              initial={{ scale: 0, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              transition={{ delay: index * 0.15 + 0.5, duration: 0.3 }}
+              viewport={{ once: true }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className={`bg-white/90 backdrop-blur-sm rounded-full p-2 transition shadow ${
+                isInCart(project.id) 
+                  ? 'bg-blue-100 text-blue-600' 
+                  : 'hover:bg-blue-100 text-blue-500'
+              }`}
+              title={isInCart(project.id) ? "Already in cart" : "Add to cart"}
+              type="button"
+              onClick={handleCartClick}
+              disabled={isInCart(project.id)}
+            >
+              <ShoppingCart className="w-5 h-5" />
+            </motion.button>
+          </div>
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>

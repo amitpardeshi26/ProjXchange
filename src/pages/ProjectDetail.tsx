@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Star, Download, Play, Lock, ShoppingCart, Heart, Share2, Eye, Calendar, User, Award, Clock, Shield, CheckCircle } from 'lucide-react';
+import ReviewSection from '../components/ReviewSection';
+import { useWishlist } from '../contexts/WishlistContext';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const ProjectDetail = () => {
   const { id } = useParams();
   const [isPurchased, setIsPurchased] = useState(false);
   const [activeTab, setActiveTab] = useState('description');
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addToCart, isInCart } = useCart();
+  const { isAuthenticated } = useAuth();
 
   // Mock project data - in real app, fetch based on ID
   const project = {
@@ -212,6 +219,24 @@ For questions or issues, please contact the seller through the StudyStack platfo
     alert('Project purchased successfully! You can now access all files and instructions.');
   };
 
+  const handleWishlistToggle = async () => {
+    if (!isAuthenticated) return;
+    
+    if (isInWishlist(project.id.toString())) {
+      await removeFromWishlist(project.id.toString());
+    } else {
+      await addToWishlist(project.id.toString());
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) return;
+    
+    if (!isInCart(project.id.toString())) {
+      await addToCart(project.id.toString());
+    }
+  };
+
   const relatedProjects = [
     {
       id: 2,
@@ -261,7 +286,7 @@ For questions or issues, please contact the seller through the StudyStack platfo
                 </div>
                 <div className="flex items-center gap-4">
                   <button className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-red-500 transition-all duration-200 rounded-xl hover:bg-red-50 hover:scale-105 animate-slideInUp" style={{ animationDelay: '200ms' }}>
-                    <Heart className="w-5 h-5" />
+                    <Heart className={`w-5 h-5 ${isInWishlist(project.id.toString()) ? 'fill-current text-red-500' : ''}`} />
                     <span className="text-sm font-medium">{project.likes}</span>
                   </button>
                   <button className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-blue-500 transition-all duration-200 rounded-xl hover:bg-blue-50 hover:scale-105 animate-slideInUp" style={{ animationDelay: '300ms' }}>
@@ -303,7 +328,7 @@ For questions or issues, please contact the seller through the StudyStack platfo
               {/* Tabs */}
               <div className="border-b border-gray-200 mb-8 animate-slideInUp" style={{ animationDelay: '700ms' }}>
                 <nav className="flex space-x-8">
-                  {['description', 'features', 'instructions', 'screenshots'].map((tab) => (
+                  {['description', 'features', 'instructions', 'screenshots', 'reviews'].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
@@ -383,6 +408,11 @@ For questions or issues, please contact the seller through the StudyStack platfo
                     </div>
                   </div>
                 )}
+                {activeTab === 'reviews' && (
+                  <div>
+                    <ReviewSection projectId={project.id.toString()} />
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -435,6 +465,36 @@ For questions or issues, please contact the seller through the StudyStack platfo
                   </button>
                 </div>
               )}
+              
+              {/* Wishlist and Cart buttons */}
+              {!isPurchased && isAuthenticated && (
+                <div className="flex gap-3 mb-6">
+                  <button
+                    onClick={handleWishlistToggle}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                      isInWishlist(project.id.toString())
+                        ? 'bg-pink-100 text-pink-700 border border-pink-300'
+                        : 'bg-gray-100 text-gray-700 hover:bg-pink-50 hover:text-pink-600'
+                    }`}
+                  >
+                    <Heart className={`w-5 h-5 ${isInWishlist(project.id.toString()) ? 'fill-current' : ''}`} />
+                    {isInWishlist(project.id.toString()) ? 'In Wishlist' : 'Add to Wishlist'}
+                  </button>
+                  <button
+                    onClick={handleAddToCart}
+                    disabled={isInCart(project.id.toString())}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                      isInCart(project.id.toString())
+                        ? 'bg-blue-100 text-blue-700 border border-blue-300 cursor-not-allowed'
+                        : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+                    }`}
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    {isInCart(project.id.toString()) ? 'In Cart' : 'Add to Cart'}
+                  </button>
+                </div>
+              )}
+              
               <div className="space-y-3 text-center text-sm text-gray-600 animate-slideInUp" style={{ animationDelay: '400ms' }}>
                 <div className="flex items-center justify-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-500" />

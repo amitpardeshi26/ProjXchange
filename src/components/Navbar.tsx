@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Menu, X, User, Upload, Home,
-  Grid3X3, Settings, LogOut, Bell, Heart
+  Grid3X3, Settings, LogOut, Bell, Heart, ShoppingCart
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useWishlist } from '../contexts/WishlistContext';
+import { useCart } from '../contexts/CartContext';
 import AuthModal from './AuthModal';
 
 const Navbar = () => {
@@ -14,6 +16,8 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, isAuthenticated, isAdmin, isAuthModalOpen, isLoginMode, openAuthModal, closeAuthModal } = useAuth();
+  const { wishlistItems } = useWishlist();
+  const { getItemCount } = useCart();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -79,12 +83,37 @@ const Navbar = () => {
                   </div>
 
                   <div className="relative group">
-                    <button className="p-2 hover:bg-blue-50 rounded-full transition">
-                      <Heart className="w-5 h-5 text-gray-600 group-hover:text-blue-600" />
-                    </button>
+                    <Link
+                      to="/wishlist"
+                      className="relative p-2 hover:bg-blue-50 rounded-full transition group"
+                    >
+                      <Heart className="w-5 h-5 text-gray-600 group-hover:text-pink-600" />
+                      {wishlistItems.length > 0 && (
+                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                          {wishlistItems.length}
+                        </span>
+                      )}
+                    </Link>
                     <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
                       Wishlist
                     </span>
+                  </div>
+
+                  <div className="relative group">
+                    <Link
+                      to="/cart"
+                      className="relative p-2 hover:bg-blue-50 rounded-full transition group"
+                    >
+                      <ShoppingCart className="w-5 h-5 text-gray-600 group-hover:text-blue-600" />
+                      {getItemCount() > 0 && (
+                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                          {getItemCount()}
+                        </span>
+                      )}
+                    </Link>
+                    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+                      Cart
+                    </button>
                   </div>
 
                   <div className="relative">
@@ -125,6 +154,20 @@ const Navbar = () => {
                             className="flex items-center px-6 py-3 text-sm text-gray-700 hover:bg-gray-50"
                           >
                             <User className="w-4 h-4 mr-3" /> Dashboard
+                          </Link>
+                          <Link
+                            to="/wishlist"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center px-6 py-3 text-sm text-gray-700 hover:bg-gray-50"
+                          >
+                            <Heart className="w-4 h-4 mr-3" /> My Wishlist
+                          </Link>
+                          <Link
+                            to="/cart"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center px-6 py-3 text-sm text-gray-700 hover:bg-gray-50"
+                          >
+                            <ShoppingCart className="w-4 h-4 mr-3" /> My Cart
                           </Link>
                           {isAdmin && (
                             <Link
@@ -185,6 +228,8 @@ const Navbar = () => {
                 <>
                   <Link to="/upload" className="block px-4 py-2 text-gray-700" onClick={() => setIsMenuOpen(false)}>Sell Project</Link>
                   <Link to="/dashboard" className="block px-4 py-2 text-gray-700" onClick={() => setIsMenuOpen(false)}>Dashboard</Link>
+                  <Link to="/wishlist" className="block px-4 py-2 text-gray-700" onClick={() => setIsMenuOpen(false)}>Wishlist</Link>
+                  <Link to="/cart" className="block px-4 py-2 text-gray-700" onClick={() => setIsMenuOpen(false)}>Cart</Link>
                   {isAdmin && (
                     <Link to="/admin" className="block px-4 py-2 text-gray-700" onClick={() => setIsMenuOpen(false)}>Admin</Link>
                   )}
